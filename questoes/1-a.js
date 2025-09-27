@@ -1,3 +1,4 @@
+(function() {
 // Matriz de rotação homogênea em torno da reta s: x=2, y=1
 
 // 1. Translação para origem (x-2, y-1)
@@ -35,7 +36,7 @@ const TR = math.multiply(T2, math.multiply(Rz, T1));
 console.log("Matriz de Rotação Homogênea em torno da reta s: x=2, y=1:");
 console.log(TR);
 
-function startAnimation(canvas) {
+window.startAnimation = function (canvas) {
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     // Exemplo de animação simples
@@ -49,3 +50,4 @@ function startAnimation(canvas) {
     }
     animate();
 }
+})();

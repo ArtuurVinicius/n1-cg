@@ -47,33 +47,56 @@
         }
 
         window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
 
         const animations = [
             'questoes/1-a.js',
-            // Adicione outros arquivos aqui, ex: 'questoes/1-b.js'
+            'questoes/1-b.js'
         ];
         let current = 0;
         let currentScript = null;
+        let animationStopper = null;
 
         function updateCurrentAnimationLabel() {
             const label = document.getElementById('currentAnimation');
-            // Extrai apenas o nome do arquivo
             const fileName = animations[current].split('/').pop();
             label.textContent = fileName;
         }
 
+        function removeCanvasAndCreateNew() {
+            const oldCanvas = document.getElementById('canvas');
+            if (oldCanvas) oldCanvas.remove();
+            const newCanvas = document.createElement('canvas');
+            newCanvas.id = 'canvas';
+            newCanvas.height = 600;
+            document.body.insertBefore(newCanvas, document.body.firstChild);
+            resizeCanvas();
+            return newCanvas;
+        }
+
         function loadAnimation(index) {
+            // Remove canvas and create a new one to clear context and stop old animations
+            const canvas = removeCanvasAndCreateNew();
+
+            // Remove previous script if exists
             if (currentScript) {
                 currentScript.remove();
+                currentScript = null;
             }
+
+            // Remove previous animation stopper if exists
+            if (typeof window.stopAnimation === 'function') {
+                window.stopAnimation();
+                window.stopAnimation = undefined;
+            }
+
+            // Remove previous startAnimation
             window.startAnimation = undefined;
 
+            // Load new script
             const script = document.createElement('script');
             script.src = animations[index];
             script.onload = () => {
                 if (typeof window.startAnimation === 'function') {
-                    const canvas = document.getElementById('canvas');
                     window.startAnimation(canvas);
                 }
             };
@@ -92,7 +115,9 @@
             loadAnimation(current);
         };
 
+        // Inicialização
         loadAnimation(current);
+        window.addEventListener('resize', resizeCanvas);
     </script>
 
     <footer style="text-align: center; margin-top: 20px;">As matrizes geradas estão disponíveis no console</footer>
