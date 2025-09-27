@@ -136,7 +136,17 @@
     }
 
     window.startAnimation = function(canvas) {
-        const matrices = simulateSerpente(20, 3);
-        drawMatricesOnCanvas(canvas, matrices);
+        const matrices = simulateSerpente(20, 3); // pode ser mais, mas só mostraremos 12
+        let frame = 0;
+        function animate() {
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawMatricesOnCanvas(canvas, matrices.slice(0, Math.min(frame, 12)));
+            if (frame < 12) {
+                frame++;
+                requestAnimationFrame(animate);
+            }
+        }
+        animate();
     };
 })();
