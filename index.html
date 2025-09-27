@@ -35,28 +35,12 @@
         #nextBtn {
             min-width: 150px;
         }
-        
-        #matrixContainer {
-            text-align: center;
-            margin: 20px;
-        }
-        
-        #matrixContainer table {
-            background-color: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin: 20px auto;
-        }
-        
-        #matrixContainer td {
-            min-width: 80px;
-        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/mathjs@11.11.0/lib/browser/math.js"></script>
 </head>
 
 <body>
     <canvas id="canvas" height="600"></canvas>
-    <div id="matrixContainer"></div>
     <div class="controls">
         <button id="prevBtn">Animação anterior</button>
         <span id="currentAnimation"></span>
@@ -75,7 +59,8 @@
             'questoes/1-a.js',
             'questoes/1-b.js',
             'questoes/1-c.js',
-            'questoes/1-simulacao.js'
+            'questoes/1-simulacao.js',
+            'questoes/2-c.js',
 
         ];
         let current = 0;
@@ -102,14 +87,6 @@
         function loadAnimation(index) {
             // Remove canvas and create a new one to clear context and stop old animations
             const canvas = removeCanvasAndCreateNew();
-
-            // Mostrar ou ocultar matrixContainer conforme a animação
-            const matrixContainer = document.getElementById('matrixContainer');
-            if (animations[index] === 'questoes/1-c.js') {
-                matrixContainer.style.display = '';
-            } else {
-                matrixContainer.style.display = 'none';
-            }
 
             // Remove previous script if exists
             if (currentScript) {
