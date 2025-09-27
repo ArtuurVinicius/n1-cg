@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Pião com Operadores Afins</title>
+        <style>
+            body {
+                margin: 0;
+            }
+            canvas {
+                display: block;
+            }
+        </style>
+    </head>
+    <body>
+        <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+
+        <script>
+            // Cena, câmera e renderizador
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xf0f0f0);
+
+            const camera = new THREE.PerspectiveCamera(
+                100,
+                window.innerWidth / window.innerHeight,
+                0.1,
+                1000
+            );
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            // Luz
+            const light = new THREE.DirectionalLight(0xffffff, 1);
+            light.position.set(5, 5, 5);
+            scene.add(light);
+
+            const ambient = new THREE.AmbientLight(0x404040, 0.8); // luz suave
+            scene.add(ambient);
+
+            // Criar o plano (chão)
+            const planeGeometry = new THREE.PlaneGeometry(20, 20);
+            const planeMaterial = new THREE.MeshStandardMaterial({
+                color: 0xdddddd,
+                side: THREE.DoubleSide,
+            });
+            const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+            plane.rotation.x = -Math.PI / 2; // deitar no plano XZ
+            plane.position.y = 0; // fica em y=0
+            scene.add(plane);
+
+            // Criar o pião (cone invertido)
+            const height = 1;
+            const radius = 0.5;
+            const geometry = new THREE.ConeGeometry(radius, height, 32);
+
+            // Ajustar para que o bico fique em (0,0,0)
+            geometry.translate(0, -height / 2, 0);
+
+            const material = new THREE.MeshStandardMaterial({
+                color: 0x0077ff,
+            });
+            const piao = new THREE.Mesh(geometry, material);
+
+            // Rotacionar o pião para que a ponta aponte para o plano
+            piao.rotation.x = Math.PI;
+
+            // Bico do pião em (1,2,0)
+
+            // Grupo para eixo r
+            const eixoR = new THREE.Object3D();
+            // Ajustar para que a ponta do pião fique sobre o plano (y=0)
+            eixoR.position.set(1, height / 2, 0);
+            eixoR.add(piao);
+
+            // Grupo para eixo s
+            const eixoS = new THREE.Object3D();
+            eixoS.position.set(2, 1, 0);
+            eixoS.add(eixoR);
+
+            scene.add(eixoS);
+
+            // Ajustar câmera
+            camera.position.set(6, 6, 6);
+            camera.lookAt(0, 0, 0);
+
+            // Tempo
+            const T = 5.0; // período em segundos
+            const clock = new THREE.Clock();
+
+            // Variável para controlar o tempo do último print
+            let lastPrint = 0;
+
+            // Defina as duas perspectivas
+            const perspectives = [
+                {
+                    // Visão lateral (exemplo)
+                    position: new THREE.Vector3(6, 6, 6),
+                    up: new THREE.Vector3(0, 1, 0),
+                    lookAt: new THREE.Vector3(0, 0, 0)
+                },
+                {
+                    // Visão de cima
+                    position: new THREE.Vector3(0, 10, 0),
+                    up: new THREE.Vector3(0, 0, -1),
+                    lookAt: new THREE.Vector3(0, 0, 0)
+                }
+            ];
+
+            let currentPerspective = 0;
+            let lastSwitch = 0;
+            const switchInterval = 5; // segundos
+
+            function setCameraPerspective(index) {
+                const p = perspectives[index];
+                camera.position.copy(p.position);
+                camera.up.copy(p.up);
+                camera.lookAt(p.lookAt);
+            }
+
+            function animate() {
+                requestAnimationFrame(animate);
+
+                const t = clock.getElapsedTime();
+
+                // Alternar perspectiva a cada switchInterval segundos
+                if (t - lastSwitch > switchInterval) {
+                    currentPerspective = (currentPerspective + 1) % perspectives.length;
+                    setCameraPerspective(currentPerspective);
+                    lastSwitch = t;
+                }
+
+                // Giro do pião em torno do seu próprio eixo Y (vertical)
+                // Agora: 4 voltas completas em T segundos
+                const thetaSpin = ((4 * 2 * Math.PI) / T) * t;
+                piao.rotation.y = thetaSpin;
+
+                // Precessão: giro do eixo do pião em torno do eixo Y do mundo
+                const thetaPrecession = ((2 * Math.PI) / T) * t;
+                eixoS.rotation.y = thetaPrecession;
+
+                // Atualizar as matrizes de mundo
+                eixoS.updateMatrixWorld(true);
+
+                // Printar as matrizes no console a cada 2 segundos
+                if (t - lastPrint >= 2) {
+                    console.clear();
+                    console.log("Matriz de eixoS (matrixWorld):", eixoS.matrixWorld.toArray());
+                    console.log("Matriz de eixoR (matrixWorld):", eixoR.matrixWorld.toArray());
+                    console.log("Matriz do piao (matrixWorld):", piao.matrixWorld.toArray());
+                    lastPrint = t;
+                }
+
+                renderer.render(scene, camera);
+            }
+
+            // Inicialize com a primeira perspectiva
+            setCameraPerspective(currentPerspective);
+            animate();
+        </script>
+    </body>
+</html>
