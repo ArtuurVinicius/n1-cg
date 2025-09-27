@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <title>Animações Computação Gráfica</title>
@@ -8,12 +9,14 @@
             margin: 0;
             padding: 0;
         }
+        
         #canvas {
             display: block;
             width: 100vw;
             height: 600px;
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
         }
+        
         .controls {
             display: flex;
             justify-content: space-between;
@@ -21,19 +24,39 @@
             width: 100vw;
             margin-top: 10px;
         }
+        
         #currentAnimation {
             flex: 1;
             text-align: center;
             font-weight: bold;
         }
-        #prevBtn, #nextBtn {
+        
+        #prevBtn,
+        #nextBtn {
             min-width: 150px;
+        }
+        
+        #matrixContainer {
+            text-align: center;
+            margin: 20px;
+        }
+        
+        #matrixContainer table {
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+        }
+        
+        #matrixContainer td {
+            min-width: 80px;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/mathjs@11.11.0/lib/browser/math.js"></script>
 </head>
+
 <body>
     <canvas id="canvas" height="600"></canvas>
+    <div id="matrixContainer"></div>
     <div class="controls">
         <button id="prevBtn">Animação anterior</button>
         <span id="currentAnimation"></span>
@@ -50,7 +73,9 @@
 
         const animations = [
             'questoes/1-a.js',
-            'questoes/1-b.js'
+            'questoes/1-b.js',
+            'questoes/1-c.js',
+
         ];
         let current = 0;
         let currentScript = null;
@@ -122,4 +147,5 @@
 
     <footer style="text-align: center; margin-top: 20px;">As matrizes geradas estão disponíveis no console</footer>
 </body>
+
 </html>
