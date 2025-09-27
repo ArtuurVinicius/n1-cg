@@ -38,41 +38,43 @@
         return finalMatrix;
     }
 
-    function displayMatrix(matrix) {
-        const matrixContainer = document.getElementById('matrixContainer');
-        if (!matrixContainer) return;
-
-        matrixContainer.innerHTML = ''; // Clear previous content
-
-        const title = document.createElement('h3');
-        title.textContent = 'Matriz de Transformação (t = 1):';
-        matrixContainer.appendChild(title);
-
-        const table = document.createElement('table');
-        table.style.borderCollapse = 'collapse';
-        table.style.margin = '20px auto';
-        table.style.fontFamily = 'monospace';
-
-        matrix.forEach(row => {
-            const tr = document.createElement('tr');
-            row.forEach(cell => {
-                const td = document.createElement('td');
-                td.style.border = '1px solid #ccc';
-                td.style.padding = '8px';
-                td.style.textAlign = 'right';
-                td.textContent = Number(cell).toFixed(4);
-                tr.appendChild(td);
-            });
-            table.appendChild(tr);
-        });
-
-        matrixContainer.appendChild(table);
-    }
-
     // Exemplo de uso com t = 1
     const result = getTransformationMatrix(1);
 
+    function drawMatrixOnCanvas(ctx, matrix, x, y, label) {
+        ctx.save();
+        ctx.font = "18px monospace";
+        ctx.fillStyle = "#222";
+        ctx.fillText(label, x, y);
+
+        ctx.font = "16px monospace";
+        const cellW = 90;
+        const cellH = 32;
+        const startY = y + 16;
+
+        // Desenha bordas e valores
+        for (let i = 0; i < matrix.length; i++) {
+            for (let j = 0; j < matrix[i].length; j++) {
+                let val = Number(matrix[i][j]).toFixed(4);
+                let cx = x + j * cellW;
+                let cy = startY + i * cellH;
+                // Borda
+                ctx.strokeStyle = "#bbb";
+                ctx.strokeRect(cx, cy, cellW, cellH);
+                // Valor
+                ctx.fillStyle = "#222";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText(val, cx + cellW/2, cy + cellH/2);
+            }
+        }
+        ctx.restore();
+    }
+
     window.startAnimation = function(canvas) {
-        displayMatrix(result);
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        drawMatrixOnCanvas(ctx, result, 60, 60, "Matriz de Transformação (t = 1):");
     };
 })();
