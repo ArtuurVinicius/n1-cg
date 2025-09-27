@@ -75,6 +75,7 @@
             'questoes/1-a.js',
             'questoes/1-b.js',
             'questoes/1-c.js',
+            'questoes/1-simulacao.js'
 
         ];
         let current = 0;
@@ -101,6 +102,14 @@
         function loadAnimation(index) {
             // Remove canvas and create a new one to clear context and stop old animations
             const canvas = removeCanvasAndCreateNew();
+
+            // Mostrar ou ocultar matrixContainer conforme a animação
+            const matrixContainer = document.getElementById('matrixContainer');
+            if (animations[index] === 'questoes/1-c.js') {
+                matrixContainer.style.display = '';
+            } else {
+                matrixContainer.style.display = 'none';
+            }
 
             // Remove previous script if exists
             if (currentScript) {
