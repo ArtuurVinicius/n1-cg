@@ -14,12 +14,31 @@
             height: 600px;
             box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
         }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100vw;
+            margin-top: 10px;
+        }
+        #currentAnimation {
+            flex: 1;
+            text-align: center;
+            font-weight: bold;
+        }
+        #prevBtn, #nextBtn {
+            min-width: 150px;
+        }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/mathjs@11.11.0/lib/browser/math.js"></script>
 </head>
 <body>
     <canvas id="canvas" height="600"></canvas>
-    <br>
-    <button id="nextBtn">Próxima animação</button>
+    <div class="controls">
+        <button id="prevBtn">Animação anterior</button>
+        <span id="currentAnimation"></span>
+        <button id="nextBtn">Próxima animação</button>
+    </div>
 
     <script>
         function resizeCanvas() {
@@ -32,10 +51,15 @@
 
         const animations = [
             'questoes/1-a.js',
-            // Adicione outros arquivos aqui
+            // Adicione outros arquivos aqui, ex: 'questoes/1-b.js'
         ];
         let current = 0;
         let currentScript = null;
+
+        function updateCurrentAnimationLabel() {
+            const label = document.getElementById('currentAnimation');
+            label.textContent = animations[current];
+        }
 
         function loadAnimation(index) {
             if (currentScript) {
@@ -53,6 +77,7 @@
             };
             document.body.appendChild(script);
             currentScript = script;
+            updateCurrentAnimationLabel();
         }
 
         document.getElementById('nextBtn').onclick = function() {
@@ -60,7 +85,14 @@
             loadAnimation(current);
         };
 
+        document.getElementById('prevBtn').onclick = function() {
+            current = (current - 1 + animations.length) % animations.length;
+            loadAnimation(current);
+        };
+
         loadAnimation(current);
     </script>
+
+    <footer style="text-align: center; margin-top: 20px;">As matrizes geradas estão disponíveis no console</footer>
 </body>
 </html>
