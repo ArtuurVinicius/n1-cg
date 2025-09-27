@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Animações Computação Gráfica</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        #canvas {
+            display: block;
+            width: 100vw;
+            height: 600px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" height="600"></canvas>
+    <br>
+    <button id="nextBtn">Próxima animação</button>
+
+    <script>
+        function resizeCanvas() {
+            const canvas = document.getElementById('canvas');
+            canvas.width = window.innerWidth;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const animations = [
+            'questoes/1-a.js',
+            // Adicione outros arquivos aqui
+        ];
+        let current = 0;
+        let currentScript = null;
+
+        function loadAnimation(index) {
+            if (currentScript) {
+                currentScript.remove();
+            }
+            window.startAnimation = undefined;
+
+            const script = document.createElement('script');
+            script.src = animations[index];
+            script.onload = () => {
+                if (typeof window.startAnimation === 'function') {
+                    const canvas = document.getElementById('canvas');
+                    window.startAnimation(canvas);
+                }
+            };
+            document.body.appendChild(script);
+            currentScript = script;
+        }
+
+        document.getElementById('nextBtn').onclick = function() {
+            current = (current + 1) % animations.length;
+            loadAnimation(current);
+        };
+
+        loadAnimation(current);
+    </script>
+</body>
+</html>
