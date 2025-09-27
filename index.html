@@ -58,7 +58,9 @@
 
         function updateCurrentAnimationLabel() {
             const label = document.getElementById('currentAnimation');
-            label.textContent = animations[current];
+            // Extrai apenas o nome do arquivo
+            const fileName = animations[current].split('/').pop();
+            label.textContent = fileName;
         }
 
         function loadAnimation(index) {
